@@ -1,46 +1,39 @@
 //
-//  PokedexCollectionViewController.swift
+//  FavoritesViewController.swift
 //  PokedexMDB
 //
-//  Created by shaina on 9/19/19.
+//  Created by shaina on 9/20/19.
 //  Copyright © 2019 shaina. All rights reserved.
 //
 
 import UIKit
 
-class PokedexCollectionViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class FavoritesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    var pokedexArr = [Pokemon]()
+    var favoritePokemon: [Pokemon]!
     var selectedPokemon: Pokemon!
     
     @IBOutlet weak var pokedexTableView: UITableView!
 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         pokedexTableView.delegate = self
         pokedexTableView.dataSource = self
         
-        for poke in pokedexArr {
-            print("table name:", poke.name)
-        }
+        favoritePokemon = UserDefaults.standard.array(forKey: "favorites") as! [Pokemon]
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return pokedexArr.count
+        return favoritePokemon.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "pokemonTableCell") as? PokedexCollectionViewCell {
-            let Pokemon = pokedexArr[indexPath.row]
-            print("url:", Pokemon.imageUrl)
-            guard let myURL = URL(string: Pokemon.imageUrl) else {
-                return cell
-            }
+            let Pokemon = favoritePokemon[indexPath.row]
             
-            let data = try? Data(contentsOf: myURL)
-            if let imageData = data {
-                cell.pokemonImageView.image = UIImage(data: imageData)
-            }
+            cell.pokemonImageView.image = getImageFromURL(url: Pokemon.imageUrl)
             cell.pokemonName.text = Pokemon.name
             cell.pokemonNumber.text = String(Pokemon.number)
             return cell
@@ -55,9 +48,10 @@ class PokedexCollectionViewController: UIViewController, UITableViewDelegate, UI
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-3
-        selectedPokemon = pokedexArr[indexPath.row]
-        performSegue(withIdentifier: "toProfile", sender: self)
+        print("Selected \(favoritePokemon[indexPath.row].name)")
+        
+        selectedPokemon = favoritePokemon[indexPath.row]
+ //       performSegue(withIdentifier: "toProfile", sender: self)
     }
     
     func getImageFromURL(url: String) -> UIImage {
@@ -66,7 +60,7 @@ class PokedexCollectionViewController: UIViewController, UITableViewDelegate, UI
         return UIImage(data: data!)!
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+ /*   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toProfile" {
             if let dest = segue.destination as? ProfileViewController {
                 dest.selectedPokemon = selectedPokemon
@@ -74,4 +68,5 @@ class PokedexCollectionViewController: UIViewController, UITableViewDelegate, UI
         }
     }
 
+*/
 }
