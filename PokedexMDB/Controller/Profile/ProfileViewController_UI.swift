@@ -8,6 +8,7 @@
 import UIKit
 
 extension ProfileViewController {
+    /// Configure all labels to display correct information about Pokemon
     func setUpDisplay() {
         self.view.backgroundColor = UIColor(patternImage: UIImage(named: "profileBackground2")!)
 

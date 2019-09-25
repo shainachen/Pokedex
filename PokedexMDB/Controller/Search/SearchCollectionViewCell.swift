@@ -12,6 +12,7 @@ class SearchCollectionViewCell:  UICollectionViewCell {
     
     @IBOutlet weak var type: UILabel!
     
+    /// Color border of cell grey if selected
     override var isSelected: Bool {
         didSet {
             self.layer.borderWidth = 3.0

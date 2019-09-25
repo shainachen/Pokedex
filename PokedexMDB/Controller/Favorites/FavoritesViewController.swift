@@ -28,6 +28,7 @@ class FavoritesViewController: UIViewController, UITableViewDelegate, UITableVie
         return favoritePokemon.count
     }
     
+    /// Set image and text in every cell of table
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "pokemonTableCell") as? FavoriteTableViewCell {
             let pokemonName = favoritePokemon[indexPath.row]
@@ -46,10 +47,12 @@ class FavoritesViewController: UIViewController, UITableViewDelegate, UITableVie
         return UITableViewCell()
     }
     
+    /// Set height of every row in table
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 150
     }
     
+    /// If row is selected, save the selected pokemon in a variable
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedPokemon = findPokemon(name: favoritePokemon[indexPath.row])
     }

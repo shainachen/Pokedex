@@ -14,9 +14,28 @@ extension SearchViewController {
         search.roundedButton()
         randomize.roundedButton()
     }
+    
+    /// Changes the cell appearance upon selection/deselection
+    ///
+    /// - Parameters:
+    ///   - collectionView
+    ///   - indexPath
+    func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+        if let selectedItems = collectionView.indexPathsForSelectedItems {
+            if selectedItems.contains(indexPath) {
+                if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "pokedexCollectionCell", for: indexPath) as? SearchCollectionViewCell {
+                    removeSelectedType(s: cell.type.text!)
+                }
+                collectionView.deselectItem(at: indexPath, animated: true)
+                return false
+            }
+        }
+        return true
+    }
 }
 
 extension UIButton{
+    /// Rounds the corners of the UIButton
     func roundedButton(){
         let maskPath1 = UIBezierPath(roundedRect: bounds,
                                      byRoundingCorners: [.topLeft , .topRight, .bottomLeft, .bottomRight],

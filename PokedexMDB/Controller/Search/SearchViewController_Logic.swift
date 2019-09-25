@@ -9,6 +9,7 @@
 import UIKit
 
 extension SearchViewController {
+    /// Set up display to be called in viewDidLoad() - all logic
     func setUpDisplayLogic() {
         
         pokedexCollectionView.delegate = self
@@ -18,6 +19,7 @@ extension SearchViewController {
         UserDefaults.standard.set([String](), forKey: "favorites")
     }
     
+    /// Clears the user's entered filter criteria every time the user returns to page
     func reset() {
         pokemon = PokemonGenerator.getPokemonArray()
         selectedTypes.removeAll()
@@ -28,10 +30,14 @@ extension SearchViewController {
         healthPoints.text = ""
     }
     
+    /// removes a type from selectedType array based on type name
+    ///
+    /// - Parameter s: name of type to be removed
     func removeSelectedType(s: String) {
         selectedTypes = selectedTypes.filter{ $0 != s}
     }
     
+    /// Generates 20 random pokemon
     func randomGenerationOfPokemon() {
         pokemon.removeAll();
         for _ in 1...20 {
@@ -40,6 +46,8 @@ extension SearchViewController {
         }
     }
     
+    /// Filters down pokemon list based on entered user criteria to be passed
+    /// into the search page
     func filterPokemon() {
         if selectedTypes.count >= 1 {
             for type in selectedTypes {
@@ -72,6 +80,11 @@ extension SearchViewController {
         }
     }
     
+    /// Sets pokemon list information for pages
+    ///
+    /// - Parameters:
+    ///   - segue
+    ///   - sender
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toList" {
             if let dest = segue.destination as? PokedexCollectionViewController {
@@ -84,10 +97,22 @@ extension SearchViewController {
         }
     }
     
+    /// Filters entered user's data to numbers to ensure values like points are numbers
+    /// - Parameters:
+    ///   - textField: text field to filter
+    ///   - range: range of numbers to change
+    ///   - string: string of text to filter from
+    /// - Returns: filtered string
     func filterToNumber(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> String {
         return string.filter("0123456789".contains)
     }
     
+    /// Checks if array contains input string
+    ///
+    /// - Parameters:
+    ///   - myArr: array to check from
+    ///   - type: string type description to check in array
+    /// - Returns: true if array does contain string, false otherwise
     func arrayContains(myArr: [String], type: String) -> Bool {
         for t in myArr {
             if t == type {
@@ -97,12 +122,16 @@ extension SearchViewController {
         return false
     }
     
+    /// Add type to selectedTypes array if it does not already exist
+    ///
+    /// - Parameter index: index of type in the types array to be added
     func addToSelectedTypes(index: Int) {
         if !arrayContains(myArr: selectedTypes, type: types[index]) {
             selectedTypes.append(types[index])
         }
     }
     
+    /// Segues to different page depending on if there is one pokemon or more than one in list
     func searchPokemon() {
         if pokemon.count == 1 {
             performSegue(withIdentifier: "toSinglePokemon", sender: self)

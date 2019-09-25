@@ -36,10 +36,16 @@ class ProfileViewController: UIViewController {
         setImage()
     }
     
+    /// Searches on Safari for pokemon
+    ///
+    /// - Parameter sender
     @IBAction func selectSearchTheWeb(_ sender: Any) {
         search()
     }
     
+    /// Adds pokemon to list of favorite pokemon
+    ///
+    /// - Parameter sender
     @IBAction func addToFavorites(_ sender: Any) {
         favoritingPokemon()
     }

@@ -33,28 +33,25 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIColl
         setUpDisplayUI()
     }
     
-    
-    func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
-        if let selectedItems = collectionView.indexPathsForSelectedItems {
-            if selectedItems.contains(indexPath) {
-                if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "pokedexCollectionCell", for: indexPath) as? SearchCollectionViewCell {
-                    removeSelectedType(s: cell.type.text!)
-                }
-                collectionView.deselectItem(at: indexPath, animated: true)
-                return false
-            }
-        }
-        return true
-    }
-
     override func viewDidAppear(_ animated: Bool) {
-       reset()
+        reset()
     }
     
+    /// Determine the number of items in the collection view
+    ///
+    /// - Parameters:
+    ///   - collectionView
+    ///   - section
+    /// - Returns: number of items in section
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
             return types.count
     }
     
+    /// Set and add items to each cell in the collection view
+    ///
+    /// - Parameters:
+    ///   - collectionView
+    ///   - indexPath
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "pokedexCollectionCell", for: indexPath) as? SearchCollectionViewCell {
         cell.type.text = types[indexPath.item]
@@ -63,20 +60,34 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIColl
         return UICollectionViewCell()
     }
     
+    /// Adds type to selected array when cell is selected
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         addToSelectedTypes(index: indexPath.row)
     }
     
+    /// Determine the layout of the collection view
+    ///
+    /// - Parameters:
+    ///   - collectionView
+    ///   - collectionViewLayout
+    ///   - indexPath
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
     let dimension = self.pokedexCollectionView.frame.size.width / 4;
     return CGSize(width: dimension, height: dimension)
-    
     }
+    
+    /// Filters pokemon list based on entered filter criteria and segues to
+    /// search page with all pokemon that fit the criteria
+    /// - Parameter sender
     @IBAction func selectSearch(_ sender: Any) {
         filterPokemon()
         searchPokemon()
     }
     
+    /// Generates 20 random pokemon and segues to
+    /// search page with all pokemon
+    ///
+    /// - Parameter sender
     @IBAction func selectRandom(_ sender: Any) {
         randomGenerationOfPokemon()
         performSegue(withIdentifier: "toList", sender: self)
