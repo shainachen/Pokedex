@@ -12,6 +12,12 @@ class SearchCollectionViewCell:  UICollectionViewCell {
     
     @IBOutlet weak var type: UILabel!
     
+    override var isSelected: Bool {
+        didSet {
+            self.layer.borderWidth = 3.0
+            self.layer.borderColor = isSelected ? UIColor.gray.cgColor : UIColor.clear.cgColor
+        }
+    }
  /*   override var isSelected: Bool {
         didSet {
             self.contentView.backgroundColor = isSelected ? UIColor.gray : UIColor.clear

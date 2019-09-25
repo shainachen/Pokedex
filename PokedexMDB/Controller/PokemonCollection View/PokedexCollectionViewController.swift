@@ -13,16 +13,13 @@ class PokedexCollectionViewController: UIViewController, UITableViewDelegate, UI
     var pokedexArr = [Pokemon]()
     var selectedPokemon: Pokemon!
     
+    @IBOutlet weak var backNav: UINavigationBar!
     @IBOutlet weak var pokedexTableView: UITableView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         pokedexTableView.delegate = self
         pokedexTableView.dataSource = self
-        
-        for poke in pokedexArr {
-            print("table name:", poke.name)
-        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -32,7 +29,6 @@ class PokedexCollectionViewController: UIViewController, UITableViewDelegate, UI
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "pokemonTableCell") as? PokedexCollectionViewCell {
             let Pokemon = pokedexArr[indexPath.row]
-            print("url:", Pokemon.imageUrl)
             guard let myURL = URL(string: Pokemon.imageUrl) else {
                 return cell
             }
@@ -54,8 +50,6 @@ class PokedexCollectionViewController: UIViewController, UITableViewDelegate, UI
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-3
         selectedPokemon = pokedexArr[indexPath.row]
         performSegue(withIdentifier: "toProfile", sender: self)
     }

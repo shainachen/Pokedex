@@ -30,15 +30,44 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIColl
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "background")!)
+
         pokedexCollectionView.delegate = self
         pokedexCollectionView.dataSource = self
     
-        UserDefaults.standard.set([Pokemon](), forKey: "favorites")
+        UserDefaults.standard.set([String](), forKey: "favorites")
+        
+        search.roundedButton()
+        randomize.roundedButton()
+        pokedexCollectionView.allowsMultipleSelection = true;
     // Do any additional setup after loading the view.
     }
     
+    
+    func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+        if let selectedItems = collectionView.indexPathsForSelectedItems {
+            if selectedItems.contains(indexPath) {
+                if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "pokedexCollectionCell", for: indexPath) as? SearchCollectionViewCell {
+                    removeSelectedType(s: cell.type.text!)
+                }
+                collectionView.deselectItem(at: indexPath, animated: true)
+                return false
+            }
+        }
+        return true
+    }
+    
+    func removeSelectedType(s: String) {
+        selectedTypes = selectedTypes.filter{ $0 != s}
+    }
     override func viewDidAppear(_ animated: Bool) {
         pokemon = PokemonGenerator.getPokemonArray()
+        selectedTypes.removeAll()
+        name.text = ""
+        number.text = ""
+        attackPoints.text = ""
+        defensePoints.text = ""
+        healthPoints.text = ""
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -55,7 +84,9 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("Selected \(types[indexPath.row])")
-        selectedTypes.append(types[indexPath.row])
+        if !arrayContains(myArr: selectedTypes, type: types[indexPath.row]) {
+            selectedTypes.append(types[indexPath.row])
+        }
         print("all selected types: \(selectedTypes.count)")
     }
     
@@ -66,6 +97,9 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     @IBAction func selectSearch(_ sender: Any) {
         filterPokemon()
+        for p in pokemon {
+            print("searching includes: ", p.name)
+        }
         if pokemon.count == 1 {
             performSegue(withIdentifier: "toSinglePokemon", sender: self)
         } else if pokemon.count > 1 {
@@ -80,12 +114,8 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIColl
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toList" {
-            print("performing to list")
             if let dest = segue.destination as? PokedexCollectionViewController {
                 dest.pokedexArr = pokemon
-                print("pokemon arr:", pokemon.count)
-
-                print("destination arr:", dest.pokedexArr.count)
             }
         } else if segue.identifier == "toSinglePokemon" {
             if let dest = segue.destination as? ProfileViewController {
@@ -110,17 +140,17 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIColl
         }
         if attackPoints.hasText {
             if let attackNum = Int(attackPoints.text!) {
-                pokemon = pokemon.filter({$0.attack >= attackNum})
+                pokemon = pokemon.filter{$0.attack! >= attackNum}
             }
         }
         if defensePoints.hasText {
             if let defenseNum = Int(defensePoints.text!) {
-                pokemon = pokemon.filter({$0.defense >= defenseNum})
+                pokemon = pokemon.filter({$0.defense! >= defenseNum})
             }
         }
         if healthPoints.hasText {
             if let healthNum = Int(healthPoints.text!) {
-                pokemon = pokemon.filter({$0.health >= healthNum})
+                pokemon = pokemon.filter({$0.health! >= healthNum})
             }
         }
         if name.hasText {
@@ -129,7 +159,7 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIColl
         
         if number.hasText {
             if let num = Int(number.text!) {
-                pokemon = pokemon.filter({$0.number == num})
+                pokemon = pokemon.filter({$0.number! == num})
             }
         }
         
@@ -146,5 +176,26 @@ class SearchViewController: UIViewController, UICollectionViewDataSource, UIColl
     func filterToNumber(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> String {
         // remove non-numerics and compare with original string
         return string.filter("0123456789".contains)
+    }
+    
+    func arrayContains(myArr: [String], type: String) -> Bool {
+        for t in myArr {
+            if t == type {
+                return true
+            }
+        }
+        return false
+    }
+}
+
+extension UIButton{
+    func roundedButton(){
+        let maskPath1 = UIBezierPath(roundedRect: bounds,
+                                     byRoundingCorners: [.topLeft , .topRight, .bottomLeft, .bottomRight],
+                                     cornerRadii: CGSize(width: 8, height: 8))
+        let maskLayer1 = CAShapeLayer()
+        maskLayer1.frame = bounds
+        maskLayer1.path = maskPath1.cgPath
+        layer.mask = maskLayer1
     }
 }

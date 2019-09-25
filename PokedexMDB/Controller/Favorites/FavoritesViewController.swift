@@ -10,9 +10,9 @@ import UIKit
 
 class FavoritesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    var favoritePokemon: [Pokemon]!
+    var favoritePokemon: [String]!
     var selectedPokemon: Pokemon!
-    
+    var allPokemon = PokemonGenerator.getPokemonArray()
     @IBOutlet weak var pokedexTableView: UITableView!
 
     
@@ -22,7 +22,16 @@ class FavoritesViewController: UIViewController, UITableViewDelegate, UITableVie
         pokedexTableView.delegate = self
         pokedexTableView.dataSource = self
         
-        favoritePokemon = UserDefaults.standard.array(forKey: "favorites") as! [Pokemon]
+        favoritePokemon = UserDefaults.standard.array(forKey: "favorites") as! [String]
+        
+        for poke in favoritePokemon {
+            print("fav poke:", poke)
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        favoritePokemon = UserDefaults.standard.array(forKey: "favorites") as! [String]
+        pokedexTableView.reloadData()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -30,10 +39,16 @@ class FavoritesViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "pokemonTableCell") as? PokedexCollectionViewCell {
-            let Pokemon = favoritePokemon[indexPath.row]
-            
-            cell.pokemonImageView.image = getImageFromURL(url: Pokemon.imageUrl)
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "pokemonTableCell") as? FavoriteTableViewCell {
+            let pokemonName = favoritePokemon[indexPath.row]
+            let Pokemon = findPokemon(name: pokemonName)
+            guard let myURL = URL(string: Pokemon.imageUrl) else {
+                return cell
+            }
+            let data = try? Data(contentsOf: myURL)
+            if let imageData = data {
+                cell.pokemonImageView.image = UIImage(data: imageData)
+            }
             cell.pokemonName.text = Pokemon.name
             cell.pokemonNumber.text = String(Pokemon.number)
             return cell
@@ -48,9 +63,9 @@ class FavoritesViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        print("Selected \(favoritePokemon[indexPath.row].name)")
+        print("Selected \(favoritePokemon[indexPath.row])")
         
-        selectedPokemon = favoritePokemon[indexPath.row]
+        selectedPokemon = findPokemon(name: favoritePokemon[indexPath.row])
  //       performSegue(withIdentifier: "toProfile", sender: self)
     }
     
@@ -58,6 +73,15 @@ class FavoritesViewController: UIViewController, UITableViewDelegate, UITableVie
         let myUrl = URL(string: url)
         let data = try? Data(contentsOf: myUrl!)
         return UIImage(data: data!)!
+    }
+    
+    func findPokemon(name: String) -> Pokemon {
+        for pokemon in allPokemon {
+            if pokemon.name == name {
+                return pokemon
+            }
+        }
+        return allPokemon[0]
     }
     
  /*   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
