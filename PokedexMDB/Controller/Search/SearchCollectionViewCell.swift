@@ -18,11 +18,5 @@ class SearchCollectionViewCell:  UICollectionViewCell {
             self.layer.borderColor = isSelected ? UIColor.gray.cgColor : UIColor.clear.cgColor
         }
     }
- /*   override var isSelected: Bool {
-        didSet {
-            self.contentView.backgroundColor = isSelected ? UIColor.gray : UIColor.clear
-        }
-    }
- */
 }
 

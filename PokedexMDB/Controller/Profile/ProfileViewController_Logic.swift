@@ -26,4 +26,27 @@ extension ProfileViewController {
             img.image = UIImage(data: imageData)
         }
     }
+    
+    func getImageFromURL(url: String) -> UIImage {
+        let myUrl = URL(string: url)
+        let data = try? Data(contentsOf: myUrl!)
+        return UIImage(data: data!)!
+    }
+    
+    func arrayContains(myArr: [String], p: Pokemon) -> Bool {
+        for poke in myArr {
+            if poke == p.name {
+                return true
+            }
+        }
+        return false
+    }
+    
+    func favoritingPokemon() {
+        var favPokemon = UserDefaults.standard.array(forKey: "favorites") as! [String]
+        if !arrayContains(myArr: favPokemon, p: selectedPokemon) {
+            favPokemon.append(selectedPokemon.name)
+            UserDefaults.standard.set(favPokemon, forKey: "favorites")
+        }
+    }
 }

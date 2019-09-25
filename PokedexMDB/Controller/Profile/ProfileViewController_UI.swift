@@ -5,9 +5,12 @@
 //  Created by shaina on 9/24/19.
 //  Copyright © 2019 shaina. All rights reserved.
 //
+import UIKit
 
 extension ProfileViewController {
     func setUpDisplay() {
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "profileBackground2")!)
+
         information.roundedButton()
         favorite.roundedButton()
         

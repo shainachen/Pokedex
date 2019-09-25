@@ -18,10 +18,9 @@ class PokedexCollectionViewController: UIViewController, UITableViewDelegate, UI
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        pokedexTableView.delegate = self
-        pokedexTableView.dataSource = self
+        setUpDisplayLogic()
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return pokedexArr.count
     }
@@ -52,20 +51,6 @@ class PokedexCollectionViewController: UIViewController, UITableViewDelegate, UI
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedPokemon = pokedexArr[indexPath.row]
         performSegue(withIdentifier: "toProfile", sender: self)
-    }
-    
-    func getImageFromURL(url: String) -> UIImage {
-        let myUrl = URL(string: url)
-        let data = try? Data(contentsOf: myUrl!)
-        return UIImage(data: data!)!
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "toProfile" {
-            if let dest = segue.destination as? ProfileViewController {
-                dest.selectedPokemon = selectedPokemon
-            }
-        }
     }
 
 }

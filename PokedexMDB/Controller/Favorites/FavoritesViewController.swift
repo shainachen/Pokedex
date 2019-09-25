@@ -9,7 +9,6 @@
 import UIKit
 
 class FavoritesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    
     var favoritePokemon: [String]!
     var selectedPokemon: Pokemon!
     var allPokemon = PokemonGenerator.getPokemonArray()
@@ -18,20 +17,11 @@ class FavoritesViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        pokedexTableView.delegate = self
-        pokedexTableView.dataSource = self
-        
-        favoritePokemon = UserDefaults.standard.array(forKey: "favorites") as! [String]
-        
-        for poke in favoritePokemon {
-            print("fav poke:", poke)
-        }
+        setUpDisplayLogic()
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        favoritePokemon = UserDefaults.standard.array(forKey: "favorites") as! [String]
-        pokedexTableView.reloadData()
+        setUpDisplayLogicWhenAppear()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -53,7 +43,6 @@ class FavoritesViewController: UIViewController, UITableViewDelegate, UITableVie
             cell.pokemonNumber.text = String(Pokemon.number)
             return cell
         }
-        
         return UITableViewCell()
     }
     
@@ -62,35 +51,6 @@ class FavoritesViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        print("Selected \(favoritePokemon[indexPath.row])")
-        
         selectedPokemon = findPokemon(name: favoritePokemon[indexPath.row])
- //       performSegue(withIdentifier: "toProfile", sender: self)
     }
-    
-    func getImageFromURL(url: String) -> UIImage {
-        let myUrl = URL(string: url)
-        let data = try? Data(contentsOf: myUrl!)
-        return UIImage(data: data!)!
-    }
-    
-    func findPokemon(name: String) -> Pokemon {
-        for pokemon in allPokemon {
-            if pokemon.name == name {
-                return pokemon
-            }
-        }
-        return allPokemon[0]
-    }
-    
- /*   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "toProfile" {
-            if let dest = segue.destination as? ProfileViewController {
-                dest.selectedPokemon = selectedPokemon
-            }
-        }
-    }
-
-*/
 }
